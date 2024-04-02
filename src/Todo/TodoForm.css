@@ -1,0 +1,24 @@
+.editTask {
+  display: none;
+}
+
+.todo-list li:hover .editTask {
+  display: inline;
+}
+
+.editTask button {
+  height: calc(10px + 2vmin);
+  font-size: 0.75rem;
+}
+
+.todo-list p form {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.TodoForm {
+  font-size: 0.8rem;
+  padding: 0.2rem;
+  vertical-align: middle;
+}
