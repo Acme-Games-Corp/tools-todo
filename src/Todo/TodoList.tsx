@@ -71,6 +71,7 @@ const TodoList = memo(({ todo, filter, dispatch }: TodoListProps) => {
             tasks.map((item, i) => (
               <TodoListItem 
                 item={item}
+                key={item.id}
                 index={i}
                 onEdit={() => updateIndex(i)}
                 onSubmit={(value) => {
@@ -78,7 +79,10 @@ const TodoList = memo(({ todo, filter, dispatch }: TodoListProps) => {
                   updateIndex(null);
                   return value;
                 }}
-                onComplete={() => dispatch({ type: 'completed', id: i })}
+                onComplete={() => {
+                  console.log(`dispatch invoked`);
+                  dispatch({ type: 'completed', id: i });
+                }}
                 edit={editIndex === i}
               />
             ))
