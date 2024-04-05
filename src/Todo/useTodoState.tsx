@@ -25,7 +25,17 @@ export type Action = { type: 'new', newItem: string }
   | { type: 'update', value: string, id: number }
   | { type: 'restore', todo: Task[] }
 
-const channel = new BroadcastChannel('acme-todo');
+
+let channel:BroadcastChannel|null = null;
+if (window.BroadcastChannel) {
+  channel = new BroadcastChannel('acme-todo');
+}
+
+const postMessage = (msg:Object) => {
+  if (channel) {
+    channel.postMessage(msg);
+  }
+};
 
 const updateTodoStorage = (todos: Task[]) => {
   localStorage.setItem('todo', JSON.stringify(todos));
@@ -36,7 +46,7 @@ const reducer = (state: State, action: Action): State => {
     case "new": {
       // Save to local storage
       // Emit to other tabs
-      channel.postMessage({
+      postMessage({
         type: 'new',
         appID
       });
@@ -56,7 +66,7 @@ const reducer = (state: State, action: Action): State => {
     case "clearCompleted": {
       // Save to local storage
       // Emit to other tabs
-      channel.postMessage({
+      postMessage({
         type: 'clear',
         appID
       });
@@ -67,7 +77,7 @@ const reducer = (state: State, action: Action): State => {
     case "completed": {
       // Save to local storage
       // Emit to other tabs
-      channel.postMessage({
+      postMessage({
         type: 'complete',
         appID
       });
@@ -78,7 +88,7 @@ const reducer = (state: State, action: Action): State => {
     case "update": {
       // Save to local storage
       // Emit to other tabs
-      channel.postMessage({
+      postMessage({
         type: 'update',
         appID
       });

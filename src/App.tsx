@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { v4 as uuidv4 } from 'uuid';
 import { useTodoState, restoreFromStorage } from "./Todo/useTodoState";
 import { TodoList } from "./Todo/TodoList"
 import { TodoForm } from "./Todo/TodoForm";
@@ -11,6 +10,9 @@ function App() {
   const defaultState = { todo: [], filter: null };
   const [state, dispatch] = useTodoState(defaultState);
   useEffect(() => {
+    if (!window.BroadcastChannel) {
+      return;
+    }
     const channel = new BroadcastChannel('acme-todo');
     const listener = (m: MessageEvent) => {
       if (m.data.appID === appID) {
