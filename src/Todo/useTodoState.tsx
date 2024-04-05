@@ -13,6 +13,7 @@ export type Filter = null | 'active' | 'completed'
 export interface State {
   todo: Task[],
   filter: Filter,
+  restored?: boolean,
 }
 
 export type Action = { type: 'new', newItem: string }
@@ -22,8 +23,13 @@ export type Action = { type: 'new', newItem: string }
   | { type: 'clearCompleted' }
   | { type: 'completed', id: number }
   | { type: 'update', value: string, id: number }
+  | { type: 'restore', todo: Task[] }
 
-const channel = new BroadcastChannel('myChannel');
+const channel = new BroadcastChannel('acme-todo');
+
+const updateTodoStorage = (todos: Task[]) => {
+  localStorage.setItem('todo', JSON.stringify(todos));
+};
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -34,7 +40,9 @@ const reducer = (state: State, action: Action): State => {
         type: 'new',
         appID
       });
-      return {...state, todo: [...state.todo, { value: action.newItem, completed: false, id: uuidv4() }]};
+      const todo = [...state.todo, { value: action.newItem, completed: false, id: uuidv4() }];
+      updateTodoStorage(todo);
+      return {...state, todo};
     }
     case "filterActive": {
       return {...state, filter: 'active'};
@@ -52,7 +60,9 @@ const reducer = (state: State, action: Action): State => {
         type: 'clear',
         appID
       });
-      return {...state, todo: state.todo.filter(item => !item.completed)};
+      const todo = state.todo.filter(item => !item.completed);
+      updateTodoStorage(todo);
+      return {...state, todo};
     }
     case "completed": {
       // Save to local storage
@@ -61,7 +71,9 @@ const reducer = (state: State, action: Action): State => {
         type: 'complete',
         appID
       });
-      return {...state, todo: state.todo.map((item, i) => i === action.id ? { ...item, completed: !item.completed } : item)};
+      const todo = state.todo.map((item, i) => i === action.id ? { ...item, completed: !item.completed } : item);
+      updateTodoStorage(todo);
+      return {...state, todo};
     }
     case "update": {
       // Save to local storage
@@ -70,16 +82,39 @@ const reducer = (state: State, action: Action): State => {
         type: 'update',
         appID
       });
-      return {...state, todo: state.todo.map((item, i) => i === action.id ? { ...item, value: action.value } : item)};
+      const todo = state.todo.map((item, i) => i === action.id ? { ...item, value: action.value } : item);
+      updateTodoStorage(todo);
+      return {...state, todo};
+    }
+    case "restore": {
+      return { ...state, restored: true, todo: action.todo }
     }
   }
 }
 
+const restoreFromStorage = (dispatch: React.Dispatch<Action>) => {
+  const rawValues = localStorage.getItem('todo');
+  if (rawValues === null) {
+    return;
+  }
+  const rawObject = JSON.parse(rawValues);
+  if (rawObject.length === undefined) {
+    return;
+  }
+  dispatch({ type: 'restore', todo: rawObject as Task[] });
+};
 
 const useTodoState = (defaultState: State) => {
-  return useReducer(reducer, defaultState);
+  const reducerHook = useReducer(reducer, defaultState);
+  const [state, dispatch] = reducerHook;
+  if (state.restored) {
+    return reducerHook;
+  }
+  restoreFromStorage(dispatch);
+  return reducerHook;
 }
 
 export {
-  useTodoState
+  useTodoState,
+  restoreFromStorage
 };

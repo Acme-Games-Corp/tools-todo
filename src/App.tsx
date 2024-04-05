@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import { useTodoState } from "./Todo/useTodoState";
+import { useTodoState, restoreFromStorage } from "./Todo/useTodoState";
 import { TodoList } from "./Todo/TodoList"
 import { TodoForm } from "./Todo/TodoForm";
 import { FilterButtons } from "./Todo/FilterButtons";
@@ -14,12 +14,13 @@ function App() {
   ], filter: null };
   const [state, dispatch] = useTodoState(defaultState);
   useEffect(() => {
-    const channel = new BroadcastChannel('myChannel');
+    const channel = new BroadcastChannel('acme-todo');
     const listener = (m: MessageEvent) => {
       if (m.data.appID === appID) {
         return;
       }
       console.log(`Received message from other document. This is App ${appID}`, m);
+      restoreFromStorage(dispatch);
     }
     channel.addEventListener('message', listener);
     return () => {
