@@ -4,6 +4,8 @@
 describe("example to-do app", () => {
   beforeEach(() => {
     cy.visit("http://localhost:3000/");
+    // localStorage.setItem('todo', '[{"value":"Take out the trash","completed":false,"id":"bae3c096-bab8-4b6c-a73a-142fc7515d69"},{"value":"Do the dishes","completed":false,"id":"7ee1a351-6423-4f35-9370-5f5b9f90880f"}]');
+    localStorage.setItem('todo', JSON.stringify(require('../../mocks/data.json')));
   });
 
   it("There are two dummy items by default", () => {

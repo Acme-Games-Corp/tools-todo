@@ -8,10 +8,7 @@ import { appID } from "./appID";
 import "./App.css";
 
 function App() {
-  const defaultState = { todo: [
-    { value: "Take out the trash", completed: false, id: uuidv4() },
-    { value: "Do the dishes", completed: false, id: uuidv4() }
-  ], filter: null };
+  const defaultState = { todo: [], filter: null };
   const [state, dispatch] = useTodoState(defaultState);
   useEffect(() => {
     const channel = new BroadcastChannel('acme-todo');

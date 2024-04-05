@@ -1,14 +1,12 @@
-{
-  "todos": [
-    {
-      "id": 1,
-      "title": "Take out the trash",
-      "completed": false
-    },
-    {
-      "id": 2,
-      "title": "Do the dishes",
-      "completed": false
-    }
-  ]
-}
+[
+  {
+    "id": 1,
+    "value": "Take out the trash",
+    "completed": false
+  },
+  {
+    "id": 2,
+    "value": "Do the dishes",
+    "completed": false
+  }
+]
