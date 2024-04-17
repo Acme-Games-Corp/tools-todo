@@ -21,8 +21,8 @@ export type Action = { type: 'new', newItem: string }
   | { type: 'filterCompleted' }
   | { type: 'filterAll' }
   | { type: 'clearCompleted' }
-  | { type: 'completed', id: number }
-  | { type: 'update', value: string, id: number }
+  | { type: 'completed', id: string }
+  | { type: 'update', value: string, id: string }
   | { type: 'restore', todo: Task[] }
 
 
@@ -81,7 +81,7 @@ const reducer = (state: State, action: Action): State => {
         type: 'complete',
         appID
       });
-      const todo = state.todo.map((item, i) => i === action.id ? { ...item, completed: !item.completed } : item);
+      const todo = state.todo.map((item, i) => item.id === action.id ? { ...item, completed: !item.completed } : item);
       updateTodoStorage(todo);
       return {...state, todo};
     }
@@ -92,7 +92,7 @@ const reducer = (state: State, action: Action): State => {
         type: 'update',
         appID
       });
-      const todo = state.todo.map((item, i) => i === action.id ? { ...item, value: action.value } : item);
+      const todo = state.todo.map((item, i) => item.id === action.id ? { ...item, value: action.value } : item);
       updateTodoStorage(todo);
       return {...state, todo};
     }

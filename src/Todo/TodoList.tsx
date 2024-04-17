@@ -46,7 +46,7 @@ const TodoListItem = ({ item, index, edit, onEdit, onSubmit, onComplete }: TodoL
 };
 
 const TodoList = memo(({ todo, filter, dispatch }: TodoListProps) => {
-  const [editIndex, updateIndex] = useState<null|number>(null);
+  const [editIndex, updateIndex] = useState<null|string>(null);
   const applyFilters = (item: Task) => {
     switch (filter) {
       case "active": {
@@ -73,17 +73,17 @@ const TodoList = memo(({ todo, filter, dispatch }: TodoListProps) => {
                 item={item}
                 key={item.id}
                 index={i}
-                onEdit={() => updateIndex(i)}
+                onEdit={() => updateIndex(item.id)}
                 onSubmit={(value) => {
-                  dispatch({ type: 'update', id: i, value });
+                  dispatch({ type: 'update', id: item.id, value });
                   updateIndex(null);
                   return value;
                 }}
                 onComplete={() => {
                   console.log(`dispatch invoked`);
-                  dispatch({ type: 'completed', id: i });
+                  dispatch({ type: 'completed', id: item.id });
                 }}
-                edit={editIndex === i}
+                edit={editIndex === item.id}
               />
             ))
           }
