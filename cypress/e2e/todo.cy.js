@@ -58,6 +58,45 @@ describe("example to-do app", () => {
       cy.contains("Take out the trash").should("not.exist");
     });
 
+    it("can edit filtered todo correctly (bug #2 fix)", () => {
+      cy.contains("Active").click();
+
+      cy.get(".todo-list li")
+        .should("have.length", 1)
+        .first()
+        .find("label")
+        .should("have.text", "Do the dishes");
+
+      cy.get(".todo-list li")
+        .first()
+        .find('.editTask button')
+        .click({ force: true })
+
+      cy.get(".todo-list li")
+        .first()
+        .find('input.TodoForm')
+        .type(` (edited){enter}`)
+      
+      cy.get(".todo-list li")
+        .should("have.length", 1)
+        .first()
+        .find("label")
+        .should("have.text", "Do the dishes (edited)");
+
+      cy.contains("All").click();
+
+      cy.get(".todo-list li")
+        .should("have.length", 2)
+        .first()
+        .find("label")
+        .should("have.text", "Take out the trash");
+
+      cy.get(".todo-list li:nth(1)")
+          .find("label")
+          .should("have.text", "Do the dishes (edited)");
+
+    });
+
     it("can filter for completed todos", () => {
       cy.contains("Completed").click();
 
