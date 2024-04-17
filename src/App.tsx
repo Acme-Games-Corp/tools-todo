@@ -25,7 +25,7 @@ function App() {
     return () => {
       channel.removeEventListener('message', listener);
     };
-  }, []);
+  });
   return (
     <div className="App">
       <main className="App-header">
