@@ -11,7 +11,7 @@
   font-size: 0.75rem;
 }
 
-.todo-list p form {
+.todo-list div form {
   display: inline;
   margin: 0;
   padding: 0;
